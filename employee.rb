@@ -7,35 +7,13 @@ class Employee
   end
 
   def tickets_attack(atk)
-    if state == :super
-      @hp -= atk * 0.6
-    elsif state == :normal
-      @hp -= atk * 0.8
-    elsif state == :warning
-      @hp -= atk * 1
-    elsif state == :dying
-      @hp -= atk * 1.5
-    elsif state == :game_over
-      @hp
-    end
-
+    @hp = EmployeeType.atk_scale(state, @hp, atk)
     update_state!
   end
 
   def take_break
-   if state == :super
-      @hp -= 10
-   elsif state == :normal
-      @hp += 10
-   elsif state == :warning
-      @hp += 40
-   elsif state == :dying
-      @hp *= 2
-   elsif state == :game_over
-      @hp
-   end
-
-   update_state!
+    @hp = EmployeeType.take_break(state, @hp)
+    update_state!
   end
 
   private
@@ -65,6 +43,36 @@ class Employee
       30
     elsif state == :game_over
       0
+    end
+  end
+
+  class EmployeeType
+    def self.atk_scale(state, hp, atk)
+      if state == :super
+        hp -= atk * 0.6
+      elsif state == :normal
+        hp -= atk * 0.8
+      elsif state == :warning
+        hp -= atk * 1
+      elsif state == :dying
+        hp -= atk * 1.5
+      elsif state == :game_over
+        hp
+      end
+    end
+
+    def self.take_break(state, hp)
+      if state == :super
+         hp -= 10
+      elsif state == :normal
+         hp += 10
+      elsif state == :warning
+         hp += 40
+      elsif state == :dying
+         hp *= 2
+      elsif state == :game_over
+         hp
+      end
     end
   end
 end
